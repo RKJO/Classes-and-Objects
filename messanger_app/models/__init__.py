@@ -15,7 +15,7 @@ class User:
     email = None
 
     @staticmethod
-    def get_user_by_email(email):
+    def get_user_by_email(cursor, email):
         sql = "SELECT id, username, email, hashed_password FROM users WHERE email=%s"
         cursor.execute(sql, (email,))  # (email, ) - bo tworzymy krotkę
         data = cursor.fetchone()
@@ -27,6 +27,8 @@ class User:
             loaded_user.__hashed_password = data[3]
             return loaded_user
 
+    def save_to_db(self):
+        pass
 
     def set_password(self, new_pasword):
         self.__hashed_password = new_pasword

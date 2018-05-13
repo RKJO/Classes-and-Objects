@@ -2,10 +2,11 @@ from clcrypto import check_password
 from models import User
 from psycopg2 import connect, OperationalError
 
+
 def create_connection(db_name = "exercise_db"):
     username = "postgres"
     password = "coderslab"
-    host= "localhost"
+    host = "localhost"
 
     try:
         connection = connect(user=username, password=password, host=host, dbname=db_name)
@@ -15,9 +16,9 @@ def create_connection(db_name = "exercise_db"):
 
 
 def create_user(email, password):
-    cnx = create_connction()
+    cnx = create_connection()
     cursor = cnx.cursor()
-    user = User.get_user_by_email(email)
+    user = User.get_user_by_email(cursor, email)
     if user:
         raise Exception('User Exists')
     else:
