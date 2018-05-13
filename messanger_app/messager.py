@@ -1,28 +1,22 @@
-from __init__ import check_password
+from clcrypto import check_password
+from models import User
+from psycopg2 import connect, OperationalError
 
+def create_connection(db_name = "exercise_db"):
+    username = "postgres"
+    password = "coderslab"
+    host= "localhost"
 
-class User:
-    __id = None
-    username = None
-    __hashed_password = None
-    email = None
-
-    @staticmethod
-    def get_user_by_email(email):
-        pass
-
-    def set_password(self, new_pasword):
-        self.__hashed_password = new_pasword
-
-    def delete_user(self):
-        pass
-
-    @staticmethod
-    def get_all_users():
-        return [User(),User()]
+    try:
+        connection = connect(user=username, password=password, host=host, dbname=db_name)
+        return connection
+    except OperationalError:
+        return None
 
 
 def create_user(email, password):
+    cnx = create_connction()
+    cursor = cnx.cursor()
     user = User.get_user_by_email(email)
     if user:
         raise Exception('User Exists')
@@ -30,14 +24,14 @@ def create_user(email, password):
         user = User()
         user.email = email
         user.set_password(password)
-        user.seve_to_db()
+        user.save_to_db()
 
 
 def change_user_password(email, password, new_password):
     user = User.get_user_by_email(email)
     if user and check_password(password, user.hash_paswrd) and len (new_password) > 8:
         user.set_password(new_password)
-        user.seve_to_db()
+        user.save_to_db()
 
 
 def delete_user(email, password):
@@ -45,7 +39,11 @@ def delete_user(email, password):
     if user and check_password(password, user.hashed_password):
         user.delete()
 
-def displey_all_users():
+
+def display_all_users():
     user_list = User.get_all_users()
     for user in user_list:
         print(" %s %s" % (user.username, user.email))
+
+
+create_user("jan@pl.pl", "niepamietam")
